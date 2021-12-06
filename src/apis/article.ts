@@ -19,3 +19,16 @@ export const createArticle = async (
 
 	await _fetch({ createArticle: article }, resole)
 }
+
+interface FindArticleCondition {
+	account?: string
+	pageNum?: number
+	pageLen?: number
+}
+
+export const findArticle = async (
+	resole: (data: SuccessResponse) => void,
+	condition: FindArticleCondition = {}
+) => {
+	await _fetch({ getArticle: condition }, resole)
+}

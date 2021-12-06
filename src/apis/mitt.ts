@@ -2,6 +2,7 @@ import Mitt from 'mitt'
 
 export enum MittEventName {
 	ALERT = 'ALERT',
+	ALERT_DIALOG = 'ALERT_DIALOG',
 }
 
 type Events = {

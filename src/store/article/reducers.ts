@@ -2,8 +2,8 @@ import { Action, ActionTypes, Article } from './actionTypes'
 // import {} from
 
 const initial: Article = {
-	author: '',
-	id: '',
+	account: '',
+	_id: '',
 	title: '',
 	content: '',
 	like: 0,
@@ -11,8 +11,9 @@ const initial: Article = {
 	comment: 0,
 	createTime: '',
 	updateTime: '',
-	img: '',
-	alt: '',
+	cover: '',
+	category: '',
+	summary: '',
 }
 
 export const reducer = (state: Article[] = [], action: Action) => {
@@ -21,6 +22,12 @@ export const reducer = (state: Article[] = [], action: Action) => {
 	switch (type) {
 		case ActionTypes.ARTICLE_ADD: {
 			state.push({ ...initial, ...res })
+			return state
+		}
+
+		case ActionTypes.ARTICLES_ADD: {
+			state = [...action.data, ...state]
+
 			return state
 		}
 

@@ -4,11 +4,11 @@ import DraftsIcon from '@mui/icons-material/Drafts'
 import PublishIcon from '@mui/icons-material/Publish'
 import { Button, InputBase, Paper, Typography } from '@mui/material'
 import 'bytemd/dist/index.min.css'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { createArticle } from '../apis/article'
-import { emitter, MittEventName } from '../apis/mitt'
+import AlertDialog from '../comps/AlertDialog'
 import { HiddenWithDesk, HiddenWithMobil } from '../comps/Hidden'
 import { MainRoute } from '../router/routes'
 import { addArticleAction } from '../store/article/actions'
@@ -21,36 +21,51 @@ const plugins = [
 export default function MDEditor() {
 	const [content, setContent] = useState('')
 	const [title, setTitle] = useState('')
+	const [cover, setCover] = useState('')
+	const [summary, setSummary] = useState('')
+	const [category, setCategory] = useState('')
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-	const { account, isLogin, token } = useSelector((state: Store) => state.user)
+	const publishDialog = useState(false)
 
-	useEffect(() => {
-		!isLogin && navigate(MainRoute.LOGIN)
-	})
+	// 获取redux中用户的资料
+	const { username, account, token } = useSelector((state: Store) => state.user)
 
-	const onPublish = () => {
-		const article = { token, author: account, title, content }
-		createArticle(article, (data) => {
-			const { token, ...res } = article
-			dispatch(addArticleAction({ ...res, ...data.data }))
-			console.log({ ...res, ...data.data })
-
-			emitter.emit(MittEventName.ALERT, `文章发表成功`)
-		})
+	const publishBtn = () => {
+		publishDialog[1](true) //just like [open, setOpen]
 	}
 
-	const onSaveToDraft = () => {
+	const saveToDraftBtn = () => {
 		console.log('title ', title, 'content: ', content)
 	}
 
+	// 弹出框收集完文章资料时fetch并保存到redux
+	const onDialogSave = () => {
+		const article = {
+			token,
+			author: username || account,
+			title,
+			content,
+			cover,
+			summary,
+			category,
+		}
+
+		createArticle(article, (data) => {
+			const { token, ...res } = article
+
+			dispatch(addArticleAction({ ...res, ...data.data }))
+
+			navigate(MainRoute.HOME)
+		})
+	}
 	return (
 		<Fragment>
 			<div className='h-3rem box-border flex items-center mb-0.5rem'>
 				<EditorTitle
 					setTitle={setTitle}
-					publish={onPublish}
-					saveToDraft={onSaveToDraft}
+					publish={publishBtn}
+					saveToDraft={saveToDraftBtn}
 				/>
 			</div>
 
@@ -61,6 +76,13 @@ export default function MDEditor() {
 					setContent(v)
 				}}
 			/>
+
+			<AlertDialog
+				openState={publishDialog}
+				setCategory={setCategory}
+				setCover={setCover}
+				setSummary={setSummary}
+				saveCallback={onDialogSave}></AlertDialog>
 		</Fragment>
 	)
 }
@@ -91,7 +113,7 @@ function EditorTitle({ setTitle, publish, saveToDraft }: EditorTitleProps) {
 			</HiddenWithDesk>
 
 			<HiddenWithMobil className={`flex items-center`}>
-				<Button disableElevation onClick={saveToDraft}>
+				<Button disableElevation onClick={saveToDraft} disabled>
 					<Typography>存为草稿</Typography>
 				</Button>
 

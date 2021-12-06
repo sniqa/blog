@@ -1,3 +1,4 @@
+import { Gender_en } from '../../constant/user'
 import { Action, ActionTypes, UserState } from './actionTypes'
 
 const initial: UserState = {
@@ -6,8 +7,9 @@ const initial: UserState = {
 	account: '',
 	username: '',
 	avatar: '',
-	gender: true,
+	gender: Gender_en.MALE,
 	signature: '',
+	articles: [],
 }
 
 export const reducer = (state = initial, action: Action) => {
@@ -19,6 +21,20 @@ export const reducer = (state = initial, action: Action) => {
 
 		case ActionTypes.LOGOUT: {
 			return (state = initial)
+		}
+
+		case ActionTypes.MODIFY: {
+			state = { ...state, ...res }
+
+			return state
+		}
+
+		case ActionTypes.GET_ARTICLES: {
+			state = {
+				...state,
+				articles: [...(state.articles || []), ...action.articles],
+			}
+			return state
 		}
 
 		default:

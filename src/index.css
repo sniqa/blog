@@ -1,4 +1,6 @@
 
+
+
 .one-line-ellipsis {
   display: -webkit-box;
   overflow: hidden;
@@ -6,6 +8,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
 }
+
 .two-line-ellipsis {
   display: -webkit-box;
   overflow: hidden;
@@ -13,16 +16,11 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
-body .content-main {
-  --top-height: calc(4rem + 2.5rem);
-  --bottom-heihgt: 3.5rem;
-  height: calc(100vh - calc(var(--top-height) + var(--bottom-heihgt)));
-  top: var(--top-height);
-  /* bottom: var(--bottom-heihgt); */
-}
+
 .text-inherit {
   color: inherit
 }
+
 .bg-inherit {
   color: inherit
 }
@@ -47,31 +45,55 @@ body .content-main {
   color: inherit;
 }
 
+
+.markdown-body > pre > code {
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
 /* Mobil model */
 @media screen and (max-width: 640px) {
+
   /*  Editor height */
   .content-main .bytemd {
     height: calc(100vh - var(--top-height) - var(--bottom-heihgt) - 4.5rem);
     border-radius: 6px;
+    width: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
+
   /* Alert width */
   #alert .alert-self {
     width: calc(100vw - 2rem);
+  }
+
+  body .content-main {
+    --top-height: calc(4rem + 2.5rem);
+    --bottom-heihgt: 3.5rem;
+    height: calc(100vh - calc(var(--top-height) + var(--bottom-heihgt)));
+    top: var(--top-height);
   }
 }
 
 /* Desk model  */
 @media screen and (min-width: 640px) {
+
   /* Editor height */
   .content-main .bytemd {
-    height: calc(100vh - var(--top-height) - 2rem );
+    height: calc(100vh - var(--top-height) - 2rem);
     box-sizing: border-box;
     border-radius: 6px;
   }
-  /* Alert width */
-  /* #alert>.alert-area {
-    width: calc(100vw-2rem);
-  } */
+
+  body .content-main {
+    --top-height: calc(4rem + 2.5rem);
+    --bottom-heihgt: 3.5rem;
+    height: calc(100vh - calc(var(--top-height) - 2.5rem));
+    top: var(--top-height);
+  }
 }
 
 .bg-transparent-important {
@@ -111,5 +133,3 @@ body .content-main {
   box-shadow: 5px 5px 5px #dcdce4;
   border-end-end-radius: 5px;
 }
-
-

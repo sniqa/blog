@@ -1,18 +1,21 @@
-import type { ReactJSXElement } from '@emotion/react/types/jsx-namespace'
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import { Paper, Typography } from '@mui/material'
+import { Paper } from '@mui/material'
+import type { MouseEvent } from 'react'
 
 interface Props {
-	name?: string
+	left?: ReactJSXElement | string
 	divider?: boolean
 	children?: ReactJSXElement | string
+	onClick?: (e?: MouseEvent) => void
 }
 
 export default function SettingPaper(props: Props) {
-	const { name = '', children = '' } = props
+	const { left = '', children = '', onClick } = props
 	return (
 		<div
-			className={`mb-0.5rem <sm:w-full sm:w-3/5 md:w-3/5 xl:w-3/5 2xl:w-1/2 cursor-pointer`}>
+			onClick={onClick}
+			className={`mb-0.5rem <sm:w-full sm:w-3/5 md:w-3/5 xl:w-3/5 2xl:w-1/2 cursor-pointer hover:bg-blue-200`}>
 			<Paper
 				elevation={0}
 				sx={{
@@ -24,7 +27,7 @@ export default function SettingPaper(props: Props) {
 					pr: '0.6rem',
 					py: '10px',
 				}}>
-				<Typography>{name}</Typography>
+				{left}
 				<div className='flex-grow flex justify-end'>{children}</div>
 				<KeyboardArrowRightIcon sx={{ color: '#86909C' }} />
 			</Paper>

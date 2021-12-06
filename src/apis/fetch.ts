@@ -1,8 +1,8 @@
 import { emitter, MittEventName } from './mitt'
 
-const url = 'http://127.0.0.1:8888/gateway'
+const url = 'http://sniqa.com/gateway'
 
-const requset = (url: string, data: any) => {
+const request = (url: string, data: any) => {
 	return new Request(url, {
 		method: 'POST',
 		body: JSON.stringify(data),
@@ -57,15 +57,16 @@ interface ResponseFalse {
 	[controller: string]: ErrorResponse
 }
 
-type ResponseState = ResponseFalse | ResponseTrue
+export type ResponseState = ResponseFalse | ResponseTrue
 
-const useFetch = async <T = ResponseState>(
-	data: object,
+export const useFetch = async <T = ResponseState>(
+	request: Request,
 	netError?: () => any,
 	resolve?: (data: any) => any,
-	reject?: (err: any) => void
+	reject?: (err: any) => void,
+	final?: () => void
 ) => {
-	return fetch(requset(url, data))
+	return fetch(request)
 		.then(function (response) {
 			if (response.ok) {
 				return response.json()
@@ -78,21 +79,27 @@ const useFetch = async <T = ResponseState>(
 		.catch<T>(function (error) {
 			return reject ? reject(error) : error
 		})
+		.finally(() => final && final())
 }
 
-const _fetch = async (data: any, resole: (data: any) => void) =>
+const _fetch = async (
+	data: any,
+	resolv: (data: SuccessResponse) => void,
+	final?: () => void
+) =>
 	useFetch(
-		data,
+		request(url, data),
 		() => emitter.emit(MittEventName.ALERT, `network error`),
 		(data) => {
 			const res = Object.values(data)[0] as SuccessResponse | ErrorResponse
 			if (res.success) {
-				return resole(res)
+				return resolv(res)
 			} else {
 				return emitter.emit(MittEventName.ALERT, res.errMsg)
 			}
 		},
-		() => emitter.emit(MittEventName.ALERT, `network error`)
+		() => emitter.emit(MittEventName.ALERT, `network error`),
+		() => final && final()
 	)
 
 export default _fetch

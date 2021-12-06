@@ -10,7 +10,7 @@ export default function Layout() {
 			<Header />
 
 			<main
-				className={`box-border px-1rem pt-0.5rem content-main <sm:overflow-y-auto`}>
+				className={`box-border px-1rem pt-0.5rem content-main overflow-y-auto`}>
 				<Outlet />
 			</main>
 

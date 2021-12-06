@@ -21,11 +21,10 @@ export enum MainRoute {
 export enum HomeChildRoute {}
 
 export enum UserChildRoute {
-	UPDATE = '',
-	FOLLOWER = '',
-	CREATE_USER = '',
+	PERSONAL = 'personal',
+	ARTICLE_LIST = 'articlelist',
 }
 
 export enum ArticleChildRoute {
-	CREATE_ARTICLE = '',
+	ARTICLE_ID = ':id',
 }

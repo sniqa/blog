@@ -1,47 +1,51 @@
 import type { ReactJSXElement } from '@emotion/react/types/jsx-namespace'
 import ModeCommentIcon from '@mui/icons-material/ModeComment'
 import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined'
 import { CardMedia, Divider, Paper, Typography } from '@mui/material'
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { MainRoute } from '../router/routes'
+import { Store } from '../store'
 import type { Article as ArticleProps } from '../store/article/actionTypes'
 
-interface Props {
-	article: ArticleProps
-}
-
-export default function Article(props: Props) {
+export default function Article(props: ArticleProps) {
 	const navigate = useNavigate()
 
+	const { account: loginUser } = useSelector((state: Store) => state.user)
+
 	const {
-		author = 'SNiQA',
-		id,
-		content = 'CONTENT光十色没空没回信开什么会没什么好MS没下课还没下课没看什么',
-		title = '我是傻瓜五光十色没空没回信开什么会没什么好MS没下课还没下课没看什么 ',
+		account = '',
+		_id,
+		title = '',
 		createTime = '',
 		// updateTime = '',
 		like = 0,
 		watch = 0,
 		comment = 0,
-		img = 'https://www.kanmn.cn/wp-content/uploads/2021/11/20211113_618fc3d78e754.jpg',
-		alt,
-	} = props.article
+		cover = '',
+		summary = '',
+	} = props
+
+	const isOwnArticle = account === loginUser
+
 	return (
 		<Paper
 			elevation={0}
-			className={'px-0.8rem py-0.5rem mb-0.5rem flex flex-col'}
-			component='article'
-			onClick={() => navigate(`${MainRoute.ARTICLE}/${id}`)}>
+			className={
+				'px-0.8rem py-0.5rem mb-0.5rem flex flex-col <md:flex-grow  md:w-1/2 cursor-pointer'
+			}
+			component='article'>
 			<header className={`flex items-center text-gray-500 text-sm`}>
-				{/* author and creation date */}
+				{/* account and creation date */}
 
 				<Typography sx={{ fontSize: 'inherit', fontWeight: '500' }}>
-					{author}
+					{account}
 				</Typography>
 
 				<Divider
@@ -54,11 +58,15 @@ export default function Article(props: Props) {
 						height: '1rem',
 					}}></Divider>
 
-				<Typography sx={{ fontSize: 'inherit' }}>{createTime}</Typography>
+				<Typography sx={{ fontSize: 'inherit' }}>
+					{new Date(createTime).toLocaleDateString()}
+				</Typography>
 			</header>
 
 			{/* article content and img */}
-			<main className={`flex justify-between`}>
+			<main
+				className={`flex justify-between`}
+				onClick={() => navigate(`${MainRoute.ARTICLE}/${_id}`)}>
 				<section className={`text-gray-500`}>
 					<Typography
 						component={`h3`}
@@ -70,38 +78,46 @@ export default function Article(props: Props) {
 					<Typography
 						sx={{ fontSize: '0.875rem', mt: '0.5rem' }}
 						className={`two-line-ellipsis`}>
-						{content}
+						{summary}
 					</Typography>
 				</section>
 
 				<figure className={``}>
-					{img && (
+					{cover && (
 						<CardMedia
 							component='img'
 							sx={{ height: '80px', width: '120px', flexGrow: 0, ml: '0.6rem' }}
-							image={img}
-							alt={alt}></CardMedia>
+							image={cover}
+							alt={''}></CardMedia>
 					)}
 				</figure>
 			</main>
 
 			{/* counter */}
-			<footer className={`flex text-sm`}>
-				<Counter
-					count={watch}
-					icon={<RemoveRedEyeIcon fontSize='inherit' />}
-					clickedIcon={<RemoveRedEyeOutlinedIcon fontSize='inherit' />}
-				/>
-				<Counter
-					count={like}
-					icon={<ThumbUpIcon fontSize='inherit' />}
-					clickedIcon={<ThumbUpAltOutlinedIcon fontSize='inherit' />}
-				/>
-				<Counter
-					count={comment}
-					icon={<ModeCommentIcon fontSize='inherit' />}
-					clickedIcon={<ModeCommentOutlinedIcon fontSize='inherit' />}
-				/>
+			<footer className={`flex justify-between text-sm`}>
+				<section className='flex'>
+					<Counter
+						count={watch}
+						icon={<RemoveRedEyeIcon fontSize='inherit' />}
+						clickedIcon={<RemoveRedEyeOutlinedIcon fontSize='inherit' />}
+					/>
+					<Counter
+						count={like}
+						icon={<ThumbUpIcon fontSize='inherit' />}
+						clickedIcon={<ThumbUpAltOutlinedIcon fontSize='inherit' />}
+					/>
+					<Counter
+						count={comment}
+						icon={<ModeCommentIcon fontSize='inherit' />}
+						clickedIcon={<ModeCommentOutlinedIcon fontSize='inherit' />}
+					/>
+				</section>
+
+				{isOwnArticle && (
+					<section>
+						<MoreVertIcon sx={{ color: '#aaa' }} />
+					</section>
+				)}
 			</footer>
 		</Paper>
 	)

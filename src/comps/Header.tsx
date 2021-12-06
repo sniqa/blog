@@ -1,6 +1,8 @@
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import { AppBar, Avatar, Divider, Toolbar } from '@mui/material'
 import { useSelector } from 'react-redux'
+import { useMatch, useNavigate } from 'react-router'
 import { MainRoute } from '../router/routes'
 import type { Store } from '../store/store'
 import { HiddenWithDesk, HiddenWithMobil } from './Hidden'
@@ -9,16 +11,32 @@ import Searchbar from './Searchbar'
 
 export default function Header() {
 	const { avatar, username } = useSelector((state: Store) => state.user)
+	const navigate = useNavigate()
+	const match = useMatch({ path: '/', end: true })
 
 	return (
 		<AppBar color='inherit' elevation={0} position='sticky'>
 			<Toolbar className='h-4rem flex justify-between items-center'>
-				<Avatar
-					sx={{ width: 32, height: 32 }}
-					className={`mr-0.6rem`}
-					src={avatar}>
-					{username}
-				</Avatar>
+				<HiddenWithMobil>
+					<Avatar
+						sx={{ width: 32, height: 32 }}
+						className={`mr-0.6rem`}
+						src={avatar}>
+						{username}
+					</Avatar>
+				</HiddenWithMobil>
+
+				<HiddenWithDesk>
+					{!match ? (
+						<ChevronLeftIcon
+							onClick={() => navigate(-1)}
+							color={`secondary`}
+							sx={{ color: '#666' }}
+							fontSize={`large`}></ChevronLeftIcon>
+					) : (
+						<div className={`w-35px flex items-center blod text-1.25rem`}></div>
+					)}
+				</HiddenWithDesk>
 
 				<HiddenWithMobil
 					className={`flex-grow box-border h-2.5rem flex items-center`}>
