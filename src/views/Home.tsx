@@ -4,7 +4,6 @@ import { findArticle } from '../apis/article'
 import Article from '../comps/Article'
 import { addArticlesAction } from '../store/article/actions'
 import type { Store } from '../store/store'
-import Loading from './Loading'
 
 export default function Home() {
 	const articles = useSelector((state: Store) => state.article)
@@ -24,8 +23,6 @@ export default function Home() {
 			dispatch(addArticlesAction(data.data))
 		})
 	}, [dispatch, articles])
-
-	if (articles.length === 0) return <Loading></Loading>
 
 	return (
 		<div
